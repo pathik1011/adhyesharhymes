@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Adhyesha Rhymes — Studio Analytics</title><meta name="description" content="YouTube analytics dashboard for Adhyesha Rhymes"><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header class="top"><button class="menu" id="menuBtn" aria-label="Open menu">☰</button><div class="yt"><span class="play">▶</span><strong>Adhyesha Studio</strong></div><div class="sync"><i></i> Live YouTube data · refreshes every 20 min</div><div class="avatar">AR</div></header>
+<aside class="sidebar" id="sidebar">
+  <div class="channel"><img src="https://yt3.ggpht.com/af9JfOqlodLnYL56LUhAQsZMzGUHC21Y-lCQjIbCc88xoLCSCIcy2ZUxIqWAqgqbcBLJccCF=s240-c-k-c0x00ffffff-no-rj" alt=""><strong>Adhyesha Rhymes</strong><span>Your channel</span></div>
+  <nav><a href="index.html">⌂ <span>Dashboard</span></a><a class="active" href="index.html#analytics">▥ <span>Analytics</span></a><a href="content.html">▶ <span>Content</span></a><a href="popular.html">★ <span>Popular videos</span></a><a href="suggestions.html">✦ <span>Video suggestions</span></a><a href="scheduled.html">◷ <span>Scheduled videos</span></a></nav>
+</aside>
+<main id="analytics">
+  <div class="page-head"><div><p class="overline">CHANNEL ANALYTICS</p><h1>Overview</h1></div><div class="range" role="group" aria-label="Date range"><button data-range="28" class="active">28 days</button><button data-range="90">90 days</button><button data-range="365">365 days</button><button data-range="month">Monthly</button></div></div>
+  <p class="date-label" id="dateLabel"></p>
+  <section class="channel-pulse">
+    <div class="pulse-goal"><div class="pulse-head"><div><p class="overline">CHANNEL GOAL</p><h2>Road to 1,000 subscribers</h2></div><strong id="goalValue">— <span>/ 1,000</span></strong></div><div class="goal-track"><i id="goalBar" style="width:0"></i></div><p id="goalText">Loading current subscriber progress…</p></div>
+    <div class="pulse-signal" id="viewsSignal"><span class="pulse-icon" id="viewsSignalIcon">↗</span><div><b id="viewsSignalTitle">Checking view growth</b><p id="viewsSignalText">Comparing the latest 28 days with the previous period…</p></div></div>
+    <div class="pulse-signal" id="retentionSignal"><span class="pulse-icon">!</span><div><b id="retentionSignalTitle">Checking audience retention</b><p id="retentionSignalText">Loading current average view duration…</p></div></div>
+    <a class="next-action" href="suggestions.html"><span>✦</span><div><b>What should I make next?</b><p>Explore current Hindi-rhyme opportunities</p></div><i>→</i></a>
+  </section>
+  <section class="cards" id="cards"></section>
+  <section class="panel chart-panel"><div class="panel-title"><div><h2 id="chartTitle">Views</h2><p id="chartSub"></p></div><div class="legend"><i></i> Views</div></div><div class="chart"><canvas id="mainChart"></canvas><div id="tip" class="tip"></div></div></section>
+  <section class="grid" id="content">
+    <article class="panel"><div class="panel-title"><div><h2>Latest content</h2><p>Click any video for its performance details</p></div></div><div id="videoList" class="video-list"></div></article>
+    <article class="panel realtime"><div class="panel-title"><div><h2>Realtime snapshot</h2><p>Current public channel totals</p></div></div><div class="live"><i></i> Connected directly to YouTube</div><strong id="realtimeViews">—</strong><span>Lifetime views</span><div class="stat-row"><div><b id="realtimeSubscribers">—</b><span>Subscribers</span></div><div><b id="realtimeVideos">—</b><span>Public videos</span></div></div></article>
+  </section>
+  <section class="panel popular" id="popular"><div class="panel-title"><div><p class="overline">TOP CONTENT</p><h2>Popular videos</h2><p>Ranked by lifetime views</p></div></div><div id="popularGrid" class="popular-grid"></div></section>
+</main>
+<dialog id="videoDialog"><button class="close" id="closeDialog" aria-label="Close">×</button><div id="videoDetail"></div></dialog>
+<div class="scrim" id="scrim"></div><link rel="stylesheet" href="theme-v2.css"><link rel="stylesheet" href="video-detail.css"><link rel="stylesheet" href="yt-studio.css"><script src="video-detail.js"></script><script src="app.js"></script></body></html>
