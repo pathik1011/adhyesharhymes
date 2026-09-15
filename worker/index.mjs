@@ -120,6 +120,11 @@ function csvObjects(text) {
   return lines.slice(1).map(line => Object.fromEntries(parseCsvLine(line).map((value, index) => [headers[index], value])));
 }
 
+function normalizeReportDate(value) {
+  const text = String(value || "");
+  return /^\d{8}$/.test(text) ? `${text.slice(0, 4)}-${text.slice(4, 6)}-${text.slice(6, 8)}` : text;
+}
+
 async function reachReportData(token, videoId) {
   const root = "https://youtubereporting.googleapis.com/v1";
   const jobs = await googleRequest(token, `${root}/jobs?includeSystemManaged=false`);
@@ -138,7 +143,8 @@ async function reachReportData(token, videoId) {
   }));
   const cutoff = daysAgo(28);
   const rowsByDate = new Map();
-  for (const row of reportRows.flat()) {
+  for (const originalRow of reportRows.flat()) {
+    const row = { ...originalRow, date: normalizeReportDate(originalRow.date) };
     if (row.date >= cutoff && !rowsByDate.has(row.date)) rowsByDate.set(row.date, row);
   }
   const rows = [...rowsByDate.values()].sort((a, b) => a.date.localeCompare(b.date));
