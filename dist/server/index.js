@@ -129,14 +129,19 @@ async function reachReportData(token, videoId) {
     return { available: false, status: "collecting", message: "Thumbnail reach collection has started. YouTube will add the first verified report after processing." };
   }
   const listing = await googleRequest(token, `${root}/jobs/${encodeURIComponent(job.id)}/reports?pageSize=30`);
-  const reports = (listing.reports || []).sort((a, b) => new Date(b.endTime) - new Date(a.endTime)).slice(0, 28);
+  const reports = (listing.reports || []).sort((a, b) => new Date(b.endTime) - new Date(a.endTime)).slice(0, 45);
   if (!reports.length) return { available: false, status: "collecting", message: "YouTube is preparing the first thumbnail reach report." };
   const reportRows = await Promise.all(reports.map(async report => {
     const response = await fetch(report.downloadUrl, { headers: { authorization: `Bearer ${token}` } });
     if (!response.ok) return [];
     return csvObjects(await response.text()).filter(row => row.video_id === videoId);
   }));
-  const rows = reportRows.flat();
+  const cutoff = daysAgo(28);
+  const rowsByDate = new Map();
+  for (const row of reportRows.flat()) {
+    if (row.date >= cutoff && !rowsByDate.has(row.date)) rowsByDate.set(row.date, row);
+  }
+  const rows = [...rowsByDate.values()].sort((a, b) => a.date.localeCompare(b.date));
   const impressions = rows.reduce((total, row) => total + Number(row.video_thumbnail_impressions || 0), 0);
   const weightedClicks = rows.reduce((total, row) => {
     const rowImpressions = Number(row.video_thumbnail_impressions || 0);
@@ -144,7 +149,15 @@ async function reachReportData(token, videoId) {
     const ctrRatio = rawCtr > 1 ? rawCtr / 100 : rawCtr;
     return total + rowImpressions * ctrRatio;
   }, 0);
-  return { available: true, status: "ready", impressions, ctrPercent: impressions ? weightedClicks * 100 / impressions : 0, estimatedClicks: Math.round(weightedClicks), days: new Set(rows.map(row => row.date)).size, latestReportAt: reports[0].endTime };
+  const dates = rows.map(row => row.date);
+  const reportedDays = new Set(dates).size;
+  return {
+    available: true, status: "ready", impressions,
+    ctrPercent: impressions ? weightedClicks * 100 / impressions : 0,
+    estimatedClicks: Math.round(weightedClicks), requestedDays: 28, reportedDays,
+    coverageStart: dates[0] || null, coverageEnd: dates.at(-1) || null,
+    completePeriod: reportedDays >= 28, latestReportAt: reports[0].endTime,
+  };
 }
 
 async function videoAnalytics(token, videoId) {
